@@ -29,13 +29,13 @@ class logstash::repo {
     'Debian': {
       include apt
       if versioncmp('5.0', "${version}") >= 0 {
-        $url_root = "$url_root/apt"
+        $url_root_tot = "$url_root/apt"
       }
       else{
-        $url_root = "$url_root/debian"
+        $url_root_tot = "$url_root/debian"
       }
       apt::source { $repo_name:
-        location => "${url_root}",
+        location => "${url_root_tot}",
         release  => 'stable',
         repos    => 'main',
         key      => {
@@ -53,14 +53,14 @@ class logstash::repo {
     }
     'RedHat': {
       if versioncmp('5.0', "${version}") >= 0 {
-        $url_root = "$url_root/yum"
+        $url_root_tot = "$url_root/yum"
       }
       else{
-        $url_root = "$url_root/centos"
+        $url_root_tot = "$url_root/centos"
       }
       yumrepo { $repo_name:
         descr    => 'Logstash Centos Repo',
-        baseurl  => "${url_root}/centos",
+        baseurl  => "${url_root_tot}",
         gpgcheck => 1,
         gpgkey   => $gpg_key_url,
         enabled  => 1,
@@ -69,8 +69,14 @@ class logstash::repo {
       Yumrepo[$repo_name] -> Package<|tag == 'logstash'|>
     }
     'Suse' : {
+      if versioncmp('5.0', "${version}") >= 0 {
+        $url_root_tot = "$url_root/yum"
+      }
+      else{
+        $url_root_tot = "$url_root/centos"
+      }
       zypprepo { $repo_name:
-        baseurl     => "${url_root}/yum",
+        baseurl     => "${url_root_tot}",
         enabled     => 1,
         autorefresh => 1,
         name        => 'logstash',
