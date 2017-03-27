@@ -18,7 +18,7 @@ class logstash::repo {
     path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd       => '/',
   }
-  if versioncmp('5.0', "${version}") >= 0 {
+  if versioncmp("${version}", '5.0') >= 0 {
     $url_root = "https://artifacts.elastic.co/packages/${version}"
   }
   else{
@@ -27,7 +27,7 @@ class logstash::repo {
   case $::osfamily {
     'Debian': {
       include apt
-      if versioncmp('5.0', "${version}") >= 0 {
+      if versioncmp("${version}", '5.0') >= 0 {
         $url_root_tot = "$url_root/apt"
       }
       else{
@@ -51,7 +51,7 @@ class logstash::repo {
       }
     }
     'RedHat': {
-      if versioncmp('5.0', "${version}") >= 0 {
+      if versioncmp("${version}", '5.0') >= 0 {
         $url_root_tot = "$url_root/yum"
       }
       else{
@@ -68,7 +68,7 @@ class logstash::repo {
       Yumrepo[$repo_name] -> Package<|tag == 'logstash'|>
     }
     'Suse' : {
-      if versioncmp('5.0', "${version}") >= 0 {
+      if versioncmp("${version}", '5.0') >= 0 {
         $url_root_tot = "$url_root/yum"
       }
       else{
