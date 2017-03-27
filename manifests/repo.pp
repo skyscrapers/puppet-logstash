@@ -19,13 +19,23 @@ class logstash::repo {
     path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd       => '/',
   }
-
+  if versioncmp('5.0', "${version}") >= 0 {
+    $url_root = "https://artifacts.elastic.co/packages/${version}"
+  }
+  else{
+    $url_root = "https://packages.elastic.co/logstash/${version}"
+  }
   case $::osfamily {
     'Debian': {
       include apt
-
+      if versioncmp('5.0', "${version}") >= 0 {
+        $url_root = "$url_root/apt"
+      }
+      else{
+        $url_root = "$url_root/debian"
+      }
       apt::source { $repo_name:
-        location => "${url_root}/debian",
+        location => "${url_root}",
         release  => 'stable',
         repos    => 'main',
         key      => {
@@ -42,6 +52,12 @@ class logstash::repo {
       }
     }
     'RedHat': {
+      if versioncmp('5.0', "${version}") >= 0 {
+        $url_root = "$url_root/yum"
+      }
+      else{
+        $url_root = "$url_root/centos"
+      }
       yumrepo { $repo_name:
         descr    => 'Logstash Centos Repo',
         baseurl  => "${url_root}/centos",
