@@ -11,7 +11,7 @@
 class logstash::repo {
   $version = $logstash::repo_version
   $repo_name = "elastic-${version}"
-  $url_root = "https://packages.elastic.co/elasticsearch/${version}/debian"
+  $url_root = "https://packages.elastic.co/elasticsearch/${version}"
   $gpg_key_url = 'https://packages.elastic.co/GPG-KEY-elasticsearch'
   $gpg_key_id = '46095ACC8548582C1A2699A9D27D666CD88E42B4'
 
@@ -25,7 +25,7 @@ class logstash::repo {
       include apt
 
       apt::source { $repo_name:
-        location => "${url_root}/apt",
+        location => "${url_root}/debian",
         release  => 'stable',
         repos    => 'main',
         key      => {
@@ -44,7 +44,7 @@ class logstash::repo {
     'RedHat': {
       yumrepo { $repo_name:
         descr    => 'Logstash Centos Repo',
-        baseurl  => "${url_root}/yum",
+        baseurl  => "${url_root}/centos",
         gpgcheck => 1,
         gpgkey   => $gpg_key_url,
         enabled  => 1,
